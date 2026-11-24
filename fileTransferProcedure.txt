@@ -1,0 +1,87 @@
+CLOUD COMPUTING PRACTICAL
+Procedure to Transfer Files from One Virtual Machine to Another
+1. Aim
+To study and perform file transfer from one virtual machine (VM) to another virtual machine over a network using the Secure Copy Protocol (SCP).
+2. Requirements
+•	Two running virtual machines (VM-1: source and VM-2: destination).
+•	Both VMs connected to a network that allows communication between them.
+•	An account on the destination VM with permission to write to the target folder.
+•	SSH service running on the destination VM and an SCP/SSH client on the source VM.
+•	A test file or folder to transfer.
+3. Theory
+SCP (Secure Copy Protocol) is a command-line method for securely copying files between computers over an SSH connection. It encrypts the transfer and uses SSH authentication. The source and destination are identified using a username, IP address (or hostname), and file path. SCP can copy a single file or an entire directory.
+Example topology: VM-1 (source)  ── network / SSH ──>  VM-2 (destination).
+Note: The procedure below assumes Linux-based VMs. For Windows VMs, use the Windows OpenSSH scp command if installed, or a GUI tool such as WinSCP. The VMs must be reachable and the required firewall/security-group rule must permit SSH (normally TCP port 22).
+4. Procedure (Linux VM to Linux VM using SCP)
+Step 1: Start both virtual machines. Start VM-1 and VM-2 in VirtualBox, VMware, or the cloud platform. Confirm that both are connected to a network that permits VM-to-VM communication.
+Step 2: Find the IP address of each VM. Open a terminal in each VM and run:
+ip addr
+Record the IPv4 address of VM-1 and VM-2. Example values used in this practical: VM-1 = 192.168.1.10 and VM-2 = 192.168.1.20. Replace these example addresses with the actual IP addresses shown on your VMs.
+Step 3: Install and start the SSH server on VM-2 (destination). On Ubuntu/Debian, run:
+sudo apt update
+sudo apt install openssh-server -y
+sudo systemctl enable --now ssh
+sudo systemctl status ssh
+If the VM uses a different Linux distribution, install and start its OpenSSH server using that distribution’s package manager and service name.
+Step 4: Create a destination folder on VM-2. Log in to VM-2 and run:
+mkdir -p ~/ReceivedFiles
+Make sure the destination account has write permission to this folder.
+Step 5: Test connectivity from VM-1 to VM-2. On VM-1, run:
+ping -c 4 192.168.1.20
+Replace the IP with VM-2’s actual IP. If ping is blocked by a firewall, that alone does not prove SSH is unavailable; test SSH directly in the next step.
+Step 6: Connect to VM-2 using SSH. From VM-1, run:
+ssh destination_username@192.168.1.20
+Replace destination_username and the IP address. Verify the host key when prompted, then enter the destination account password (or use an authorized SSH key). After confirming login, type exit to return to VM-1.
+Step 7: Create a sample file on VM-1 (source). Run:
+echo "File transfer test from VM-1" > ~/sample.txt
+Step 8: Transfer the file using SCP. On VM-1, run:
+scp ~/sample.txt destination_username@192.168.1.20:~/ReceivedFiles/
+Enter the destination password if requested. SCP displays transfer progress. The file is copied to the ReceivedFiles folder on VM-2.
+Step 9: Transfer an entire directory (optional). Use the -r option:
+scp -r ~/MyFolder destination_username@192.168.1.20:~/ReceivedFiles/
+Step 10: Verify the transferred file on VM-2. Log in to VM-2 and run:
+ls -l ~/ReceivedFiles/
+cat ~/ReceivedFiles/sample.txt
+Confirm that sample.txt exists and its contents match the original file.
+5. Alternative Methods
+A. VirtualBox Shared Folder
+1.	Shut down the VM if required by the VirtualBox version/settings.
+2.	Open VM Settings → Shared Folders → Add Folder.
+3.	Select a host folder, enable Auto-mount (and Make Permanent if needed), then start the VM.
+4.	Install VirtualBox Guest Additions if required and access the mounted shared folder inside the guest OS.
+5.	Copy the required files from the shared folder into the destination VM or its own shared folder.
+This method is convenient when both VMs run on the same host and VirtualBox shared folders are supported. It is not a general method for VMs on separate physical hosts.
+B. Windows VM to Windows VM
+6.	Enable/install OpenSSH Server on the destination Windows VM and start the sshd service.
+7.	Allow inbound TCP port 22 in Windows Defender Firewall, limited to the required source network.
+8.	Find the destination VM IP address using ipconfig.
+9.	From the source VM, run: scp C:\Path\file.txt username@DESTINATION_IP:"C:/Users/username/ReceivedFiles/"
+10.	Authenticate, then check the destination folder to verify the file.
+Alternatively, use WinSCP with the destination VM’s IP address, SSH port, username, and authentication details. Do not expose SSH to the public internet unnecessarily.
+6. Important Points / Troubleshooting
+•	Connection timed out: Check VM network mode, routing, IP address, firewall, and security-group rules.
+•	Connection refused: The destination SSH server may not be running or listening on the expected port.
+•	Permission denied: Check the username, password/SSH key, and destination-folder permissions.
+•	No such file or directory: Verify the source and destination paths; use absolute paths if unsure.
+•	For large or important files, verify file size or checksum after transfer. Example: sha256sum sample.txt on both VMs.
+•	Use only authorized accounts and transfer data only when permitted. Avoid copying confidential data to untrusted VMs.
+7. Result
+The file was successfully transferred from the source virtual machine (VM-1) to the destination virtual machine (VM-2) using SCP over an SSH connection, and the transferred file was verified on the destination VM.
+8. Conclusion
+File transfer between virtual machines can be performed securely over a network using SCP. The process requires network connectivity, a running SSH service on the destination VM, valid credentials, and correct file permissions. Shared folders and graphical tools such as WinSCP are alternative methods depending on the virtualization platform and operating systems.
+9. Viva Questions
+What is SCP?
+SCP is a secure command-line utility used to copy files between systems over SSH.
+What is SSH?
+SSH is a protocol that provides secure remote login and communication over a network.
+Which port is commonly used by SSH?
+TCP port 22 by default.
+What does -r do in SCP?
+It copies directories recursively.
+What information is required for SCP?
+Source/destination path, destination username, host IP/hostname, and authentication.
+What is the difference between SCP and a VirtualBox shared folder?
+SCP transfers files over a network connection; a VirtualBox shared folder exposes a host folder to a guest VM.
+10. References
+OpenSSH scp manual: https://man.openbsd.org/scp
+Ubuntu scp manual: https://manpages.ubuntu.com/manpages/jammy/man1/scp.1.html

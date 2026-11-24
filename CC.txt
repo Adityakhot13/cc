@@ -1,0 +1,190 @@
+// C compiler
+
+
+sudo apt update
+sudo apt install build-essential -y
+
+
+nano hello.c
+
+#include <stdio.h>
+
+int main() {
+    printf("Hello World!\n");
+    return 0;
+}
+
+gcc hello.c -o hello
+
+./hello
+
+
+
+// Google app engine
+
+(New-Object Net.WebClient).DownloadFile("https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe", "$env:Temp\GoogleCloudSDKInstaller.exe")
+
+& $env:Temp\GoogleCloudSDKInstaller.exe
+
+
+//dashboard for creating project
+https://console.cloud.google.com/home/dashboard?project=woven-flash-515317-q8
+
+    
+gcloud auth login
+gcloud init
+gcloud projects list
+gcloud config set project YOUR_PROJECT_ID
+
+
+gcloud config get-value project
+//gcloud app create
+
+
+mkdir AppEngineLab
+cd AppEngineLab
+
+notepad main.py
+
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return "Hello World! Welcome to Google App Engine."
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=8080)
+
+
+notepad requirements.txt
+Flask
+
+
+
+notepad app.yaml
+runtime: python313
+
+python --version
+python -m pip install Flask
+python main.py
+http://127.0.0.1:8080
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//for n even no 
+in main.py use 
+
+
+
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return '''
+    <h2>Generate N Even Numbers</h2>
+    <form action="/even" method="get">
+        Enter N:
+        <input type="number" name="n" required>
+        <input type="submit" value="Generate">
+    </form>
+    '''
+
+@app.route('/even')
+def even():
+    n = int(request.args.get('n'))
+
+    numbers = [2 * i for i in range(1, n + 1)]
+
+    return f"<h2>First {n} Even Numbers:</h2>{numbers}"
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=8080)
+
+
+
+
+
+//multiplication of 2 metrices
+
+
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return '''
+    <h2>Matrix Multiplication</h2>
+    <form action="/multiply" method="get">
+        Enter matrix elements (2x2):
+        <p>Matrix A (comma separated):</p>
+        <input name="a" placeholder="1,2,3,4" required>
+
+        <p>Matrix B (comma separated):</p>
+        <input name="b" placeholder="5,6,7,8" required>
+
+        <br><br>
+        <input type="submit" value="Multiply">
+    </form>
+    '''
+
+@app.route('/multiply')
+def multiply():
+    a = list(map(int, request.args.get('a').split(',')))
+    b = list(map(int, request.args.get('b').split(',')))
+
+    if len(a) != 4 or len(b) != 4:
+        return "Enter exactly 4 elements for each matrix."
+
+    A = [a[:2], a[2:]]
+    B = [b[:2], b[2:]]
+
+    C = [[0, 0], [0, 0]]
+
+    for i in range(2):
+        for j in range(2):
+            for k in range(2):
+                C[i][j] += A[i][k] * B[k][j]
+
+    return f"<h2>Result of Matrix Multiplication:</h2>{C}"
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=8080)
+
+
+
+
+for deployment 
+gcloud app create
+gcloud app deploy
+gcloud app browse
+
+
+
+
+
+
+
+
+
+
+CloudSim
+
+java 8 or 11

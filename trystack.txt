@@ -1,0 +1,176 @@
+# EXPERIMENT: LAUNCH A VIRTUAL MACHINE USING TRYSTACK (ONLINE OPENSTACK DEMO VERSION)
+
+## 1. Aim
+To study and perform the procedure for launching a virtual machine using TryStack (Online OpenStack Demo Version).
+
+## 2. Theory
+OpenStack is an open-source cloud computing platform used to create and manage cloud infrastructure. It provides Infrastructure as a Service (IaaS), allowing users to create virtual machines, networks and storage through a web-based dashboard.
+
+TryStack was a free online OpenStack demo environment that allowed students and developers to experiment with OpenStack services without installing the complete cloud infrastructure on their computers.
+
+It provided a web-based interface called Horizon Dashboard, through which users could launch and manage virtual machines.
+
+A Virtual Machine (VM) is a software-based computer that runs its own operating system using virtualized hardware resources such as CPU, RAM and storage.
+
+**Note:** TryStack has been discontinued. The following procedure describes its historical workflow and can be performed using another available OpenStack Horizon environment.
+
+## 3. Requirements
+1. Computer or laptop.
+2. Internet connection.
+3. Web browser.
+4. OpenStack/TryStack account.
+5. OpenStack Horizon dashboard.
+6. Ubuntu or CirrOS virtual machine image.
+
+## 4. OpenStack Components
+
+| Component | Function |
+|---|---|
+| Nova | Creates and manages virtual machines. |
+| Glance | Stores and manages VM images. |
+| Neutron | Provides networking services. |
+| Keystone | Provides authentication and authorization. |
+| Horizon | Provides a web-based dashboard. |
+| Cinder | Provides block storage. |
+
+## 5. Procedure
+
+**Step 1: Access TryStack Website**
+1. Open a web browser.
+2. Visit the TryStack website.
+3. Register for an account using the available registration process.
+4. After account approval, log in using your credentials.
+5. Open the OpenStack Horizon dashboard.
+
+**Step 2: Open the Compute Dashboard**
+1. Log in to the Horizon dashboard.
+2. Select the required project.
+3. Navigate to Project → Compute → Instances.
+4. The instances page displays available virtual machines.
+
+**Step 3: Create a Key Pair**
+1. Navigate to Project → Compute → Key Pairs.
+2. Click Create Key Pair.
+3. Enter the name `my-key`.
+4. Select SSH key type.
+5. Click Create Key Pair.
+6. Download and save the private key.
+
+**Step 4: Create a Network**
+1. Navigate to Project → Network → Networks.
+2. Click Create Network.
+3. Enter network name as `internal-network`.
+4. Enable the subnet option.
+5. Enter subnet name as `internal-subnet`.
+6. Enter network address as `192.168.1.0/24`.
+7. Click Create.
+
+**Step 5: Create a Router**
+1. Navigate to Project → Network → Routers.
+2. Click Create Router.
+3. Enter router name as `my-router`.
+4. Select the external network as the gateway, if available.
+5. Click Create Router.
+6. Open the router and select Interfaces.
+7. Click Add Interface.
+8. Select `internal-subnet` and submit.
+
+**Step 6: Configure Security Groups**
+1. Navigate to Project → Network → Security Groups.
+2. Select the default security group or create a new one.
+3. Click Manage Rules.
+4. Add the following inbound rules:
+
+| Protocol | Port | Purpose |
+|---|---|---|
+| SSH | 22 | Remote access |
+| HTTP | 80 | Web access |
+| ICMP | All | Ping connectivity |
+
+5. Save the rules.
+
+**Step 7: Launch a Virtual Machine**
+1. Navigate to Project → Compute → Instances.
+2. Click Launch Instance.
+3. Enter the following details:
+
+| Parameter | Value |
+|---|---|
+| Instance Name | MyUbuntuVM |
+| Count | 1 |
+| Image | Ubuntu |
+| Flavor | Small |
+| Network | internal-network |
+| Key Pair | my-key |
+| Security Group | default or my-security-group |
+
+4. Select the appropriate image and flavor.
+5. Review the configuration.
+6. Click Launch Instance.
+
+**Step 8: Check Virtual Machine Status**
+1. Navigate to Compute → Instances.
+2. Find the instance named `MyUbuntuVM`.
+3. Check its status.
+4. Wait until the status changes to `Active`.
+5. Verify that the VM has received a private IP address.
+
+**Step 9: Assign a Floating IP**
+1. Open the instance actions menu.
+2. Select Associate Floating IP.
+3. Allocate a new floating IP if required.
+4. Select the allocated IP.
+5. Click Associate.
+
+**Step 10: Access the Virtual Machine**
+1. Open the instance details.
+2. Select the Console tab.
+3. Verify that the operating system has started.
+4. Alternatively, connect through SSH using the floating IP:
+
+```bash
+ssh -i my-key.pem ubuntu@FLOATING_IP
+```
+
+Replace `FLOATING_IP` with the actual assigned IP address.
+
+## 6. Result
+The procedure for launching a virtual machine using the TryStack (Online OpenStack Demo Version) platform was studied. A virtual machine can be created by selecting an operating system image, configuring CPU and RAM through a flavor, assigning a network and configuring security settings.
+
+## 7. Conclusion
+Thus, the procedure for creating, launching and accessing a virtual machine using the OpenStack Horizon dashboard was studied successfully.
+
+## 8. Viva Questions and Answers
+
+**1. What is OpenStack?**  
+OpenStack is an open-source cloud computing platform used to manage cloud infrastructure.
+
+**2. What is TryStack?**  
+TryStack was an online OpenStack demo environment used for learning and testing cloud services.
+
+**3. What is a virtual machine?**  
+A virtual machine is a software-based computer that runs an operating system independently.
+
+**4. What is Nova?**  
+Nova is the OpenStack service responsible for managing virtual machine instances.
+
+**5. What is Glance?**  
+Glance is the OpenStack image service used to store and manage VM images.
+
+**6. What is Horizon?**  
+Horizon is the web-based dashboard used to manage OpenStack resources.
+
+**7. What is a flavor?**  
+A flavor defines the CPU, RAM and disk resources allocated to a virtual machine.
+
+**8. What is a floating IP?**  
+A floating IP is an externally routable IP address associated with a virtual machine.
+
+**9. What is Neutron?**  
+Neutron is the networking service in OpenStack.
+
+**10. What is the purpose of a key pair?**  
+A key pair provides secure authentication when accessing a virtual machine through SSH.
+
+## 9. Reference
+Official OpenStack Documentation: https://docs.openstack.org/
